@@ -7,10 +7,18 @@ predictor-corrector method. The code can be used to simulate a bubble
 rising in a rectangular box.
 Created by: Haryo Mirsandi
 """
-# initialization
-# clean output folder
 
+# import
+from io_manager import create_dir, clean_dir
+
+# clean output folder
+create_dir('output')
+clean_dir('output','bub*.png')
+    
 # read input file
+
+
+# initialization
 
 # initialize variables (grid, velocity, pressure, and force)
 
