@@ -9,14 +9,23 @@ Created by: Haryo Mirsandi
 """
 
 # import
-from io_manager import create_dir, clean_dir
+from io_manager import create_dir, clean_dir, read_input
 
 # clean output folder
 create_dir('output')
 clean_dir('output','bub*.png')
     
 # read input file
+filepath = 'input.txt'
+param, domain, dispersed, continuous, bubble_list = read_input(filepath)
 
+# check input file
+print(param.nstep,param.dt,param.max_iter,param.max_err,param.beta,param.out_freq)
+print(domain.lx,domain.ly,domain.nx,domain.ny,domain.gravx,domain.gravy)
+print(dispersed.rho,dispersed.mu,dispersed.sigma)
+print(continuous.rho,continuous.mu,continuous.sigma)
+for bub in bubble_list:
+    print(bub.radius,bub.center_x,bub.center_y,bub.point,bub.total)
 
 # initialization
 
