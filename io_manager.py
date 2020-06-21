@@ -8,7 +8,7 @@ Created on Thu Jun 18 12:23:28 2020
 import glob, os
 from parameter import Parameter
 from domain import Domain
-from fluid_properties import FluidProp
+from fluid import FluidProp
 from bubble import Bubble
 
 def clean_dir(dir, pattern):
@@ -44,15 +44,14 @@ def read_input(filepath):
         # dispersed phase
         file.readline()
         file.readline()
-        rho = float(file.readline().split("=")[1])
-        mu = float(file.readline().split("=")[1])
+        disp_rho = float(file.readline().split("=")[1])
+        disp_mu = float(file.readline().split("=")[1])
         sigma = float(file.readline().split("=")[1])
-        dispersed = FluidProp(rho, mu, sigma)
         # continuous phase
         file.readline()    
-        rho2 = float(file.readline().split("=")[1])
-        mu2 = float(file.readline().split("=")[1])
-        continuous = FluidProp(rho2, mu2, sigma)
+        cont_rho = float(file.readline().split("=")[1])
+        cont_mu = float(file.readline().split("=")[1])
+        fluid_prop = FluidProp(cont_rho, cont_mu, disp_rho, disp_mu, sigma)
         file.readline()
         # bubble size and location
         bubble_list = []
@@ -64,4 +63,4 @@ def read_input(filepath):
             center_y = float(file.readline().split("=")[1])
             point = int(file.readline().split("=")[1])
             bubble_list.append(Bubble(center_x, center_y, radius, point))
-    return param, domain, dispersed, continuous, bubble_list
+    return param, domain, fluid_prop, bubble_list

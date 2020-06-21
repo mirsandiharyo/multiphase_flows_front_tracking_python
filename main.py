@@ -11,6 +11,7 @@ Created by: Haryo Mirsandi
 # import
 from io_manager import create_dir, clean_dir, read_input
 from domain import Face, Center
+from fluid import Fluid
 
 # clean output folder
 create_dir('output')
@@ -18,13 +19,15 @@ clean_dir('output','bub*.png')
     
 # read input file
 filepath = 'input.txt'
-[param, domain, dispersed, continuous, bubble_list] = read_input(filepath)
+[param, domain, fluid_prop, bubble_list] = read_input(filepath)
 
 # initialize variables (grid, velocity, pressure, and force)
 face = Face(domain)
 center = Center(domain)
-
-# initialize the physical properties
+    
+# initialize the physical properties inside the domain
+fluid = Fluid(domain, fluid_prop)
+fluid.initialize_domain(domain, center, bubble_list, fluid, fluid_prop)
 
 # set the initial front (gas-liquid interface)
 
