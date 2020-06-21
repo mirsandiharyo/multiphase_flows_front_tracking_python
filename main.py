@@ -27,7 +27,7 @@ center = Center(domain)
     
 # initialize the physical properties inside the domain
 fluid = Fluid(domain, fluid_prop)
-fluid.initialize_domain(domain, center, bubble_list, fluid, fluid_prop)
+fluid.initialize_domain(domain, center, bubble_list, fluid_prop)
 
 # set the initial front (gas-liquid interface)
 
