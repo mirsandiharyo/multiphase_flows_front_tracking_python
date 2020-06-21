@@ -30,6 +30,8 @@ fluid = Fluid(domain, fluid_prop)
 fluid.initialize_domain(domain, center, bubble_list, fluid_prop)
 
 # set the initial front (gas-liquid interface)
+for bub in bubble_list:
+    bub.initialize_front()
 
 # start time-loop
 
