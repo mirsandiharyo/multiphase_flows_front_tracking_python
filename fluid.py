@@ -29,10 +29,10 @@ class Fluid:
     def initialize_domain(self, domain, center, bubble_list, fluid_prop):
         # set the fluid properties inside the discrete phase with an initial
         # spherical shape
-        for i in range(2,domain.nx+1):
-            for j in range(2,domain.ny+1):
+        for i in range(1,domain.nx+1):
+            for j in range(1,domain.ny+1):
                 for bub in bubble_list:
                     if ((center.x[i]-bub.center_x)**2+
                         (center.y[j]-bub.center_y)**2 < bub.radius**2):
-                        self.rho[i][j] = fluid_prop.disp_rho
-                        self.mu[i][j]  = fluid_prop.disp_mu
+                        self.rho[i,j] = fluid_prop.disp_rho
+                        self.mu[i,j]  = fluid_prop.disp_mu
