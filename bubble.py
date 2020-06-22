@@ -102,11 +102,45 @@ class Bubble:
         cell[index_x+1,index_y+1] = cell[index_x+1,index_y+1] + \
             coeff_x*coeff_y*value/d1/d2
             
-    def update_front_location(self):
+    def update_front_location(self, face, param, domain):
         """
         Advect the location of marker points using the interpolated velocity field.
         """
-        pass
+        # interpolate the velocity from the eulerian grid to the location of marker point
+        u_x = np.zeros(self.point+2)
+        u_y = np.zeros(self.point+2)
+        for i in range(1, self.point+1):
+            # interpolate velocity in x-direction
+            u_x[i] = self.interpolate_velocity(domain, face.u, self.x[i], self.y[i], 1)
+            # interpolate velocity in y-direction
+            u_y[i] = self.interpolate_velocity(domain, face.v, self.x[i], self.y[i], 2)
+    
+    	# advect the marker point 
+        for i in range(1, self.point+1):
+            self.x[i] = self.x[i]+param.dt*u_x[i]
+            self.y[i] = self.y[i]+param.dt*u_y[i]
+        self.x[0] = self.x[self.point];
+        self.y[0] = self.y[self.point];
+        self.x[self.point+1] = self.x[1];
+        self.y[self.point+1] = self.y[1]; 
+    
+    @staticmethod
+    def interpolate_velocity(domain, face_vel, x, y, axis):
+        """
+        Interpolate velocities located on eulerian cells to a lagrangian marker
+        point.
+        """
+        # get the eulerian cell index
+        [index_x, index_y] = domain.get_cell_index(x, y, axis)
+        # calculate the weighing coefficient
+        [coeff_x, coeff_y] = domain.get_weight_coeff(x, y, index_x, index_y, axis)
+        # interpolate the surrounding velocities to the marker location
+        vel = (1.0-coeff_x)*(1.0-coeff_y)*face_vel[index_x  ,index_y  ]+ \
+                   coeff_x *(1.0-coeff_y)*face_vel[index_x+1,index_y  ]+ \
+              (1.0-coeff_x)*     coeff_y *face_vel[index_x  ,index_y+1]+ \
+                   coeff_x *     coeff_y *face_vel[index_x+1,index_y+1]      
+        
+        return vel
     
     def restructure_front(self, domain):
         """

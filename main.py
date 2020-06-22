@@ -71,7 +71,7 @@ for nstep in range(1, param.nstep+1):
         
         # update the front location 
         for bub in bubble_list:
-            bub.update_front_location()
+            bub.update_front_location(face, param, domain)
             
         # update physical properties
         fluid.update_density()
