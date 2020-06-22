@@ -39,7 +39,15 @@ for bub in bubble_list:
 io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
                          param.time, 0)
 
+for nstep in range(param.nstep):
     # store second order variables
+    face.store_old_variables()
+    fluid.store_old_variables()
+    for bub in bubble_list:
+        bub.store_old_variables()
+    
+    for substep in range(2):  # second order loop
+        pass
         # calculate the surface tension force at the front (lagrangian grid)
         # and distribute it to eulerian grid
 

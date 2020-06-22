@@ -27,3 +27,8 @@ class Bubble:
         for i in range(self.point+2):
             self.x[i] = self.center_x-self.radius*math.sin(2.0*math.pi*i/self.point)
             self.y[i] = self.center_y-self.radius*math.cos(2.0*math.pi*i/self.point)
+            
+    def store_old_variables(self):
+        # store old variables for second order scheme
+        self.x_old = self.x
+        self.y_old = self.y

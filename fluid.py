@@ -36,3 +36,9 @@ class Fluid:
                         (center.y[j]-bub.center_y)**2 < bub.radius**2):
                         self.rho[i,j] = fluid_prop.disp_rho
                         self.mu[i,j]  = fluid_prop.disp_mu
+                        
+                        
+    def store_old_variables(self):
+        # store old variables for second order scheme
+        self.rho_old = self.rho
+        self.mu_old = self.mu

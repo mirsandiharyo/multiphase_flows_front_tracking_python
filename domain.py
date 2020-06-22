@@ -31,7 +31,12 @@ class Face:
         self.v_temp = np.zeros((domain.nx+2, domain.ny+1))
         # forces
         self.force_x = np.zeros((domain.nx+2, domain.ny+2))
-        self.force_y = np.zeros((domain.nx+2, domain.ny+2))     
+        self.force_y = np.zeros((domain.nx+2, domain.ny+2))
+        
+    def store_old_variables(self):
+        # store old variables for second order scheme
+        self.u_old = self.u
+        self.v_old = self.v
 
 class Center:
     def __init__(self, domain):
