@@ -13,7 +13,7 @@ class Bubble:
     
     def __init__(self, center_x, center_y, radius, point):
         """
-        Initialize the bubble
+        Initialize the bubble.
         """        
         self.center_x = center_x
         self.center_y = center_y
@@ -27,7 +27,7 @@ class Bubble:
         
     def initialize_front(self):
         """
-        Determine the location of the initial spherical bubble
+        Determine the location of the initial spherical bubble.
         """ 
         for i in range(self.point+2):
             self.x[i] = self.center_x-self.radius*math.sin(2.0*math.pi*i/self.point)
@@ -35,15 +35,22 @@ class Bubble:
             
     def store_old_variables(self):
         """ 
-        Store old variables for second order scheme
+        Store old variables for second order scheme.
         """ 
         self.x_old = self.x
         self.y_old = self.y
+
+    def store_2nd_order_variables(self):
+        """ 
+        Store second order variables.
+        """ 
+        self.x = 0.5(self.x_old+self.x)
+        self.y = 0.5(self.y_old+self.y)
         
     def calculate_surface_tension(self, domain, fluid_prop, face):
         """ 
         Calculate the surface tension force on the lagrangian grid and
-        distribute it to the surrounding eulerian grid cells
+        distribute it to the surrounding eulerian grid cells.
         """
         # initialize the variables to store the tangent vector
         tan_x = np.zeros(self.point+2)
@@ -71,7 +78,7 @@ class Bubble:
     @staticmethod
     def distribute_lagrangian_to_eulerian(domain, cell, x, y, value, axis):
         """ 
-        Distribute a value from a lagrangian point to neighboring eulerian cells
+        Distribute a value from a lagrangian point to neighboring eulerian cells.
         """
         # assign the grid size
         if (axis == 1):      # x-dir
@@ -93,4 +100,16 @@ class Bubble:
         cell[index_x  ,index_y+1] = cell[index_x  ,index_y+1] + \
             (1.0-coeff_x)*coeff_y*value/d1/d2;      
         cell[index_x+1,index_y+1] = cell[index_x+1,index_y+1] + \
-            coeff_x*coeff_y*value/d1/d2;        
+            coeff_x*coeff_y*value/d1/d2
+            
+    def update_front_location(self):
+        """
+        Advect the location of marker points using the interpolated velocity field.
+        """
+        pass
+    
+    def restructure_front(self):
+        """
+        Restructure the front to maintain the quality of the interface.
+        """
+        pass

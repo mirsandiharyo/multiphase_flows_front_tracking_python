@@ -17,7 +17,7 @@ class IOManager:
     @staticmethod
     def clean_dir(dir, pattern):
         """
-        Clean output directory
+        Clean output directory.
         """
         for file in glob.glob(dir+"/"+pattern):
             os.remove(file)
@@ -25,14 +25,14 @@ class IOManager:
     @staticmethod
     def create_dir(dir):
         """
-        Create output directory
+        Create output directory.
         """
         os.makedirs(dir, exist_ok=True)
     
     @staticmethod
     def read_input(filepath):
         """
-        Read simulation parameters from input file
+        Read simulation parameters from input file.
         """
         with open(filepath) as file:
             # solver parameters
@@ -83,7 +83,7 @@ class IOManager:
     @staticmethod
     def visualize_results(face, domain, fluid, fluid_prop, bubble_list, time, nstep):
         """
-        Visualize the phase fraction field, velocity vector, and marker points
+        Visualize the phase fraction field, velocity vector, and marker points.
         """
         # calculate phase fraction
         alpha = fluid.rho - fluid_prop.cont_rho

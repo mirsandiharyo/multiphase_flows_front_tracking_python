@@ -6,14 +6,11 @@ Created on Mon Jun 22 18:48:00 2020
 """
 
 class FlowSolver:
-    # def __init__(self):
-    #     pass
-
     @staticmethod
     def update_wall_velocity(domain, face):
         """
         Update the wall velocity (the domain is currently assumed as a box 
-        with no-slip boundary condition)
+        with no-slip boundary condition).
         """ 
         u_south = 0;
         u_north = 0;
@@ -28,7 +25,7 @@ class FlowSolver:
     def calculate_temporary_velocity(param, domain, fluid_prop, fluid, face):
         """
         Calculate the temporary velocities without accounting for the pressure
-        (first step of the second order projection method)
+        (first step of the second order projection method).
         """ 
         # temporary u velocity (advection term)
         for i in range(1, domain.nx):
@@ -89,4 +86,18 @@ class FlowSolver:
                  (1./domain.dy)*2.* \
                 (fluid.mu[i  ,j+1]*(1./domain.dy)*(face.v[i  ,j+1]-face.v[i  ,j  ])-
                  fluid.mu[i  ,j  ]*(1./domain.dy)*(face.v[i  ,j  ]-face.v[i  ,j-1])))/ \
-                 (0.5*(fluid.rho[i,j+1]+fluid.rho[i,j]));  
+                 (0.5*(fluid.rho[i,j+1]+fluid.rho[i,j]))
+                 
+    @staticmethod
+    def solve_pressure():
+        """
+        Calculate the pressure field.
+        """
+        pass
+    
+    @staticmethod
+    def correct_velocity():
+        """
+        Correct the velocity by adding the pressure gradient.
+        """
+        pass

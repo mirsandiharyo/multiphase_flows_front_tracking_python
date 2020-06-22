@@ -42,7 +42,7 @@ io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list,
                          param.time, 0)
 
 for nstep in range(param.nstep):
-    # store second order variables
+    # store old variables
     face.store_old_variables()
     fluid.store_old_variables()
     for bub in bubble_list:
@@ -60,22 +60,38 @@ for nstep in range(param.nstep):
         flow_solver.update_wall_velocity(domain, face)
         
         # calculate the (temporary) velocity
-        flow_solver.calculate_temporary_velocity(param, domain, fluid_prop, fluid, face)
+        flow_solver.calculate_temporary_velocity(param, domain, fluid_prop, 
+                                                 fluid, face)
         
         # solve pressure
+        flow_solver.solve_pressure()
         
         # correct the velocity by adding the pressure gradient
+        flow_solver.correct_velocity()
         
         # update the front location 
-
+        for bub in bubble_list:
+            bub.update_front_location()
+            
         # update physical properties
-  
-    # end
+        fluid.update_density()
+        fluid.update_viscosity()
+        
+    # substep end
     # store second order variables
-    
-    # restructure the front
-    
-    # visualize the results
+    face.store_2nd_order_variables()
+    fluid.store_2nd_order_variables()
+    for bub in bubble_list:
+        bub.store_2nd_order_variables()
 
+    # restructure the front
+    for bub in bubble_list:
+        bub.restructure_front()
+
+    # visualize the results
+    param.time = param.time+param.dt
+    if (nstep+1 % param.out_freq == 0):
+        io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
+                         param.time, nstep)        
 # end time-loop
 print('program finished')
