@@ -75,7 +75,7 @@ for nstep in range(1, param.nstep+1):
             
         # update physical properties
         fluid.update_density()
-        fluid.update_viscosity()
+        fluid.update_viscosity(fluid_prop)
         
     # substep end
     # store second order variables

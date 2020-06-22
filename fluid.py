@@ -65,8 +65,11 @@ class Fluid:
         """
         pass
     
-    def update_viscosity(self):
+    def update_viscosity(self, fluid_prop):
         """
         Update the viscosity field using harmonic averaging.
         """
-        pass
+        self.mu = self.rho-fluid_prop.cont_rho
+        self.mu = self.mu*(fluid_prop.disp_mu -fluid_prop.cont_mu )/ \
+                          (fluid_prop.disp_rho-fluid_prop.cont_rho)
+        self.mu = self.mu+fluid_prop.cont_mu
