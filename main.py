@@ -9,17 +9,18 @@ Created by: Haryo Mirsandi
 """
 
 # import
-from io_manager import create_dir, clean_dir, read_input
+from io_manager import IOManager
 from domain import Face, Center
 from fluid import Fluid
 
 # clean output folder
-create_dir('output')
-clean_dir('output','bub*.png')
+io_man = IOManager()
+io_man.create_dir('output')
+io_man.clean_dir('output','bub*.png')
     
 # read input file
 filepath = 'input.txt'
-[param, domain, fluid_prop, bubble_list] = read_input(filepath)
+[param, domain, fluid_prop, bubble_list] = io_man.read_input(filepath)
 
 # initialize variables (grid, velocity, pressure, and force)
 face = Face(domain)
@@ -34,10 +35,10 @@ for bub in bubble_list:
     bub.initialize_front()
 
 # start time-loop
-
 # visualize the initial condition
+io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
+                         param.time, 0)
 
-# time loop
     # store second order variables
         # calculate the surface tension force at the front (lagrangian grid)
         # and distribute it to eulerian grid

@@ -13,3 +13,4 @@ class Parameter:
         self.max_err = max_err
         self.beta = beta
         self.out_freq = out_freq
+        self.time = 0.0
