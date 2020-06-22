@@ -47,9 +47,12 @@ for nstep in range(param.nstep):
         bub.store_old_variables()
     
     for substep in range(2):  # second order loop
-        pass
         # calculate the surface tension force at the front (lagrangian grid)
         # and distribute it to eulerian grid
+        face.initialize_force(domain)
+        
+        for bub in bubble_list:
+            bub.calculate_surface_tension(domain, fluid_prop, face)
 
         # update the tangential velocity at boundaries
 
