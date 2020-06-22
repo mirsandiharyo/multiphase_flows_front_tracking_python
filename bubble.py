@@ -19,10 +19,10 @@ class Bubble:
         self.center_y = center_y
         self.radius = radius
         self.point = point
-        self.x = np.zeros(point*2)
-        self.y = np.zeros(point*2)
-        self.x_old = np.zeros(point*2)
-        self.y_old = np.zeros(point*2)        
+        self.x = np.zeros(self.point*2)
+        self.y = np.zeros(self.point*2)
+        self.x_old = np.zeros(self.point*2)
+        self.y_old = np.zeros(self.point*2)        
         Bubble.total += 1
         
     def initialize_front(self):
@@ -44,8 +44,8 @@ class Bubble:
         """ 
         Store second order variables.
         """ 
-        self.x = 0.5(self.x_old+self.x)
-        self.y = 0.5(self.y_old+self.y)
+        self.x = 0.5*(self.x_old+self.x)
+        self.y = 0.5*(self.y_old+self.y)
         
     def calculate_surface_tension(self, domain, fluid_prop, face):
         """ 
@@ -108,8 +108,32 @@ class Bubble:
         """
         pass
     
-    def restructure_front(self):
+    def restructure_front(self, domain):
         """
         Restructure the front to maintain the quality of the interface.
         """
-        pass
+        self.x_old = self.x
+        self.y_old = self.y
+        j = 0
+        print(self.point)
+        for i in range(1, self.point+1):
+            # check the distance
+            dst = math.sqrt(((self.x_old[i]-self.x[j])/domain.dx)**2 +
+                            ((self.y_old[i]-self.y[j])/domain.dy)**2)
+            if (dst > 0.5):         # too big
+             	# add marker points
+                j = j+1
+                self.x[j] = 0.5*(self.x_old[i]+self.x[j-1])
+                self.y[j] = 0.5*(self.y_old[i]+self.y[j-1])
+                j = j+1
+                self.x[j] = self.x_old[i]
+                self.y[j] = self.y_old[i]
+            elif (dst >= 0.25) and (dst <= 0.5):
+                j = j+1
+                self.x[j] = self.x_old[i]
+                self.y[j] = self.y_old[i]
+        self.point = j;
+        self.x[0] = self.x[self.point];
+        self.y[0] = self.y[self.point];
+        self.x[self.point+1] = self.x[1];
+        self.y[self.point+1] = self.y[1];

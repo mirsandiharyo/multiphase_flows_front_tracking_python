@@ -35,13 +35,13 @@ fluid.initialize_domain(domain, center, bubble_list, fluid_prop)
 # set the initial front (gas-liquid interface)
 for bub in bubble_list:
     bub.initialize_front()
-
+     
 # start time-loop
 # visualize the initial condition
 io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
                          param.time, 0)
 
-for nstep in range(param.nstep):
+for nstep in range(1, param.nstep+1):
     # store old variables
     face.store_old_variables()
     fluid.store_old_variables()
@@ -86,11 +86,12 @@ for nstep in range(param.nstep):
 
     # restructure the front
     for bub in bubble_list:
-        bub.restructure_front()
+        bub.restructure_front(domain)
 
     # visualize the results
     param.time = param.time+param.dt
-    if (nstep+1 % param.out_freq == 0):
+    if (nstep % param.out_freq == 0):
+        print('visualize results')
         io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
                          param.time, nstep)        
 # end time-loop
