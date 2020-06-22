@@ -10,6 +10,9 @@ import math
 
 class Domain:
     def __init__(self, lx, ly, nx, ny, gravx, gravy):
+        """ 
+        Initialize the domain parameters
+        """
         self.lx = lx
         self.ly = ly
         self.nx = nx
@@ -20,7 +23,9 @@ class Domain:
         self.dy = self.ly/self.ny;
 
     def get_cell_index(self, x, y, axis):
-        # fetch the indices of the eulerian cell located on the left of a given point
+        """ 
+        Fetch the indices of the eulerian cell located on the left of a given point
+        """
         if (axis == 1):      # x-dir
             index_x = math.floor(x/self.dx)+1;
             index_y = math.floor((y+0.5*self.dy)/self.dy)+1      
@@ -30,8 +35,10 @@ class Domain:
         return index_x, index_y
         
     def get_weight_coeff(self, x, y, index_x, index_y, axis):
-        # calculate the weight coefficients of a point with respect to its location
-        # inside the eulerian cell
+        """ 
+        Calculate the weight coefficients of a point with respect to its location 
+        inside the eulerian cell
+        """
         if (axis == 1):      # x-dir
             coeff_x = x/self.dx-index_x+1
             coeff_y = (y+0.5*self.dy)/self.dy-index_y+1
@@ -42,7 +49,9 @@ class Domain:
 
 class Face:
     def __init__(self, domain):
-        # initialize variables (liquid is at rest at the beginning)
+        """ 
+        Initialize variables (liquid is at rest at the beginning)
+        """
         # velocity in x-direction
         self.u = np.zeros((domain.nx+1, domain.ny+2))
         self.u_old = np.zeros((domain.nx+1, domain.ny+2))
@@ -56,16 +65,24 @@ class Face:
         self.force_y = np.zeros((domain.nx+2, domain.ny+2))
     
     def initialize_force(self, domain):
+        """ 
+        Set the forces to zero
+        """
         self.force_x = np.zeros((domain.nx+2, domain.ny+2))
         self.force_y = np.zeros((domain.nx+2, domain.ny+2))
         
     def store_old_variables(self):
-        # store old variables for second order scheme
+        """ 
+        Store old variables for second order scheme
+        """
         self.u_old = self.u
         self.v_old = self.v
 
 class Center:
     def __init__(self, domain):
+        """
+        Initialize variables stored at cell center
+        """
         # set the grid
         self.x = np.linspace(-0.5, domain.nx+2-1.5, domain.nx+2)*domain.dx
         self.y = np.linspace(-0.5, domain.ny+2-1.5, domain.ny+2)*domain.dy;

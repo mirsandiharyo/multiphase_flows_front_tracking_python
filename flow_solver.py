@@ -27,7 +27,7 @@ class FlowSolver:
     @staticmethod
     def calculate_temporary_velocity(param, domain, fluid_prop, fluid, face):
         """
-        calculate the temporary velocities without accounting for the pressure
+        Calculate the temporary velocities without accounting for the pressure
         (first step of the second order projection method)
         """ 
         # temporary u velocity (advection term)

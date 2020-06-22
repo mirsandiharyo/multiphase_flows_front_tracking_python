@@ -7,7 +7,6 @@ Created on Thu Jun 18 12:23:28 2020
 
 import glob, os
 import numpy as np
-import math
 import matplotlib.pyplot as plt
 from parameter import Parameter
 from domain import Domain
@@ -15,22 +14,26 @@ from fluid import FluidProp
 from bubble import Bubble
 
 class IOManager:
-    # def __init__(self, domain):
-        # velocity at cell center
-        # self.u_center = np.zeros((domain.nx+1, domain.ny+1))
-        # self.v_center = np.zeros((domain.nx+1, domain.ny+1))        
-
     @staticmethod
     def clean_dir(dir, pattern):
+        """
+        Clean output directory
+        """
         for file in glob.glob(dir+"/"+pattern):
             os.remove(file)
     
     @staticmethod
     def create_dir(dir):
+        """
+        Create output directory
+        """
         os.makedirs(dir, exist_ok=True)
     
     @staticmethod
     def read_input(filepath):
+        """
+        Read simulation parameters from input file
+        """
         with open(filepath) as file:
             # solver parameters
             file.readline()
@@ -79,6 +82,9 @@ class IOManager:
     
     @staticmethod
     def visualize_results(face, domain, fluid, fluid_prop, bubble_list, time, nstep):
+        """
+        Visualize the phase fraction field, velocity vector, and marker points
+        """
         # calculate phase fraction
         alpha = fluid.rho - fluid_prop.cont_rho
         alpha = alpha * 1/(fluid_prop.disp_rho-fluid_prop.cont_rho)     
@@ -94,15 +100,7 @@ class IOManager:
         # set the colorbar
         cbar = plt.colorbar()
         cbar.ax.set_title('Phase fraction', rotation=0, size=8)
-        cbar.ax.tick_params(labelsize=7)
-        # Minor ticks
-        # ax = plt.gca()
-        # grid_x = np.linspace(0, domain.lx, domain.nx+1);
-        # grid_y = np.linspace(0, domain.ly, domain.ny+1);
-        # ax.set_xticks(grid_x, minor=True);
-        # ax.set_yticks(grid_y, minor=True);
-        # # Gridlines based on minor ticks
-        # ax.grid(which='minor', color='w', linestyle='-', linewidth=2)              
+        cbar.ax.tick_params(labelsize=7)           
         # create grid and calculate velocity at the cell center
         grid_x = np.linspace(0, domain.lx, domain.nx+1)
         grid_y = np.linspace(0, domain.ly, domain.ny+1)

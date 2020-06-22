@@ -7,6 +7,9 @@ Created on Sat Jun 20 19:48:20 2020
 
 class Parameter:
     def __init__(self, nstep, dt, max_iter, max_err, beta, out_freq):
+        """ 
+        Initialize simulation parameters
+        """
         self.nstep = nstep
         self.dt = dt
         self.max_iter = max_iter

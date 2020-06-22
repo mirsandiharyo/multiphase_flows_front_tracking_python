@@ -9,6 +9,9 @@ import numpy as np
 
 class FluidProp:
     def __init__(self, cont_rho, cont_mu, disp_rho, disp_mu, sigma):
+        """ 
+        Initialize the fluid properties of the continuous and dispersed phases
+        """
         # continuous phase
         self.cont_rho = cont_rho
         self.cont_mu = cont_mu
@@ -19,16 +22,20 @@ class FluidProp:
         
 class Fluid:
     def __init__(self, domain, fluid_prop):
-        # initialize the density and viscosity using values from the 
-        # continuous phase       
+        """ 
+        Initialize the density and viscosity fields using the properties from
+        continuous phase          
+        """
         self.rho = np.zeros((domain.nx+2, domain.ny+2))+fluid_prop.cont_rho
         self.rho_old = np.zeros((domain.nx+2, domain.ny+2))+fluid_prop.cont_rho
         self.mu = np.zeros((domain.nx+2, domain.ny+2))+fluid_prop.cont_mu
         self.mu_old = np.zeros((domain.nx+2, domain.ny+2))+fluid_prop.cont_mu
         
     def initialize_domain(self, domain, center, bubble_list, fluid_prop):
-        # set the fluid properties inside the discrete phase with an initial
-        # spherical shape
+        """ 
+        Set the fluid properties inside the discrete phase with an initial
+        spherical shape      
+        """
         for i in range(1,domain.nx+1):
             for j in range(1,domain.ny+1):
                 for bub in bubble_list:
@@ -36,9 +43,10 @@ class Fluid:
                         (center.y[j]-bub.center_y)**2 < bub.radius**2):
                         self.rho[i,j] = fluid_prop.disp_rho
                         self.mu[i,j]  = fluid_prop.disp_mu
-                        
-                        
+                           
     def store_old_variables(self):
-        # store old variables for second order scheme
+        """ 
+        Store old variables for second order scheme
+        """
         self.rho_old = self.rho
         self.mu_old = self.mu

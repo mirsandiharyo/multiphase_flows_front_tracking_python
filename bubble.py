@@ -11,7 +11,10 @@ import math
 class Bubble:
     total = 0
     
-    def __init__(self, center_x, center_y, radius, point): 
+    def __init__(self, center_x, center_y, radius, point):
+        """
+        Initialize the bubble
+        """        
         self.center_x = center_x
         self.center_y = center_y
         self.radius = radius
@@ -23,19 +26,25 @@ class Bubble:
         Bubble.total += 1
         
     def initialize_front(self):
-        # determine the location of the initial spherical bubble
+        """
+        Determine the location of the initial spherical bubble
+        """ 
         for i in range(self.point+2):
             self.x[i] = self.center_x-self.radius*math.sin(2.0*math.pi*i/self.point)
             self.y[i] = self.center_y-self.radius*math.cos(2.0*math.pi*i/self.point)
             
     def store_old_variables(self):
-        # store old variables for second order scheme
+        """ 
+        Store old variables for second order scheme
+        """ 
         self.x_old = self.x
         self.y_old = self.y
         
     def calculate_surface_tension(self, domain, fluid_prop, face):
-        # calculate the surface tension force on the lagrangian grid and
-        # distribute it to the surrounding eulerian grid cells
+        """ 
+        Calculate the surface tension force on the lagrangian grid and
+        distribute it to the surrounding eulerian grid cells
+        """
         # initialize the variables to store the tangent vector
         tan_x = np.zeros(self.point+2)
         tan_y = np.zeros(self.point+2)
@@ -61,8 +70,10 @@ class Bubble:
 
     @staticmethod
     def distribute_lagrangian_to_eulerian(domain, cell, x, y, value, axis):
-        # distribute a value from a lagrangian point to neighboring eulerian cells
-    	# assign the grid size
+        """ 
+        Distribute a value from a lagrangian point to neighboring eulerian cells
+        """
+        # assign the grid size
         if (axis == 1):      # x-dir
             d1 = domain.dx;
             d2 = domain.dy;           
