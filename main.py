@@ -60,7 +60,8 @@ for nstep in range(param.nstep):
         flow_solver.update_wall_velocity(domain, face)
         
         # calculate the (temporary) velocity
-
+        flow_solver.calculate_temporary_velocity(param, domain, fluid_prop, fluid, face)
+        
         # solve pressure
         
         # correct the velocity by adding the pressure gradient
