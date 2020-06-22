@@ -12,6 +12,7 @@ Created by: Haryo Mirsandi
 from io_manager import IOManager
 from domain import Face, Center
 from fluid import Fluid
+from flow_solver import FlowSolver
 
 # clean output folder
 io_man = IOManager()
@@ -23,6 +24,7 @@ filepath = 'input.txt'
 [param, domain, fluid_prop, bubble_list] = io_man.read_input(filepath)
 
 # initialize variables (grid, velocity, pressure, and force)
+flow_solver = FlowSolver()
 face = Face(domain)
 center = Center(domain)
     
@@ -55,7 +57,8 @@ for nstep in range(param.nstep):
             bub.calculate_surface_tension(domain, fluid_prop, face)
 
         # update the tangential velocity at boundaries
-
+        flow_solver.update_wall_velocity(domain, face)
+        
         # calculate the (temporary) velocity
 
         # solve pressure
@@ -73,5 +76,5 @@ for nstep in range(param.nstep):
     
     # visualize the results
 
- # end time-loop
-
+# end time-loop
+print('program finished')
