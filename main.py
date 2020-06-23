@@ -67,7 +67,7 @@ for nstep in range(1, param.nstep+1):
         flow_solver.solve_pressure()
         
         # correct the velocity by adding the pressure gradient
-        flow_solver.correct_velocity()
+        flow_solver.correct_velocity(param, domain, fluid, face, center)
         
         # update the front location 
         for bub in bubble_list:

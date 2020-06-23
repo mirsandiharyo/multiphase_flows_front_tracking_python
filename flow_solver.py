@@ -96,8 +96,21 @@ class FlowSolver:
         pass
     
     @staticmethod
-    def correct_velocity():
+    def correct_velocity(param, domain, fluid, face, center):
         """
         Correct the velocity by adding the pressure gradient.
         """
-        pass
+        # correct velocity in x-direction
+        face.u[1:domain.nx, 1:domain.ny+1] = \
+            face.u_temp[1:domain.nx, 1:domain.ny+1]-param.dt*(2.0/domain.dy)* \
+            (center.pres[2:domain.nx+1, 1:domain.ny+1]-center.pres[1:domain.nx, 1:domain.ny+1])/ \
+            (fluid.rho[2:domain.nx+1, 1:domain.ny+1]  +fluid.rho[1:domain.nx, 1:domain.ny+1])
+                    
+        # correct velocity in y-direction
+        face.v[1:domain.nx+1, 1:domain.ny] = \
+            face.v_temp[1:domain.nx+1, 1:domain.ny]-param.dt*(2.0/domain.dy)* \
+            (center.pres[1:domain.nx+1, 2:domain.ny+1]-center.pres[1:domain.nx+1, 1:domain.ny])/ \
+            (fluid.rho[1:domain.nx+1, 2:domain.ny+1]  +fluid.rho[1:domain.nx+1, 1:domain.ny])           
+
+
+
