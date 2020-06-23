@@ -19,9 +19,9 @@ class FlowSolver:
         v_west = 0;
         v_east = 0;
         face.u[:, 0] = 2*u_south-face.u[:, 1]
-        face.u[:, domain.ny+1] = 2*u_north-face.u[:, domain.ny+1];
-        face.v[0, :] = 2*v_west -face.v[1, :];
-        face.v[domain.nx+1, :] = 2*v_east -face.v[domain.nx+1, :];
+        face.v[0, :] = 2*v_west -face.v[1, :]
+        face.u[:, domain.ny+1] = 2*u_north-face.u[:, domain.ny+1]
+        face.v[domain.nx+1, :] = 2*v_east -face.v[domain.nx+1, :]
         
     @staticmethod
     def calculate_temporary_velocity(param, domain, fluid_prop, fluid, face):

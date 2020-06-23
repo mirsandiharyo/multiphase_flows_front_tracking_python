@@ -58,13 +58,47 @@ class Fluid:
         self.rho = 0.5*(self.rho+self.rho_old)
         self.mu = 0.5*(self.mu+self.mu_old)
         
-    def update_density(self):
+    def update_density(self, param, domain, bubble_list, fluid_prop):
         """ 
         Update the density field using the density jump at the lagrangian interface.
         Linear averaging is used to get the value at each cell.
         """
-        pass
-    
+        # initialize the variables to store the density jump
+        face_x = np.zeros((domain.nx+2, domain.ny+2))
+        face_y = np.zeros((domain.nx+2, domain.ny+2))
+        # distribute the density jump to the eulerian grid
+        for bub in bubble_list:
+            for i in range(1, bub.point+1):
+                # density jump in x-direction
+                force_x = -0.5*(bub.y[i+1]-bub.y[i-1])* \
+                    (fluid_prop.disp_rho-fluid_prop.cont_rho)
+                bub.distribute_lagrangian_to_eulerian(domain, face_x, bub.x[i],
+                                                      bub.y[i], force_x, 1)
+
+                # density jump in y-direction
+                force_y = 0.5*(bub.x[i+1]-bub.x[i-1])* \
+                    (fluid_prop.disp_rho-fluid_prop.cont_rho); 
+                bub.distribute_lagrangian_to_eulerian(domain, face_y, bub.x[i], 
+                                                      bub.y[i], force_y, 2)
+            
+        # construct the density field using SOR
+        # TODO: create SOR function 
+        for it in range(param.max_iter):
+            old_rho = self.rho
+            self.rho[1:domain.nx+1, 1:domain.ny+1] = (1.0-param.beta)* \
+                self.rho[1:domain.nx+1, 1:domain.ny+1]+param.beta*0.25* \
+               (self.rho[2:domain.nx+2, 1:domain.ny+1]+
+                self.rho[0:domain.nx  , 1:domain.ny+1]+
+                self.rho[1:domain.nx+1, 2:domain.ny+2]+
+                self.rho[1:domain.nx+1, 0:domain.ny  ]+
+               domain.dx*face_x[0:domain.nx, 1:domain.ny+1]- 
+               domain.dx*face_x[1:domain.nx+1, 1:domain.ny+1]+
+               domain.dy*face_y[1:domain.nx+1, 0:domain.ny]-
+               domain.dy*face_y[1:domain.nx+1, 1:domain.ny+1])
+        
+            if (np.abs(old_rho-self.rho).max() < param.max_err):
+                break
+            
     def update_viscosity(self, fluid_prop):
         """
         Update the viscosity field using harmonic averaging.
