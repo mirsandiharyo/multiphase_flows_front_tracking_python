@@ -27,11 +27,11 @@ class Domain:
         Fetch the indices of the eulerian cell located on the left of a given point.
         """
         if (axis == 1):      # x-dir
-            index_x = math.floor(x/self.dx)+1;
-            index_y = math.floor((y+0.5*self.dy)/self.dy)+1      
+            index_x = math.floor(x/self.dx);
+            index_y = math.floor((y+0.5*self.dy)/self.dy)      
         else:                # y-dir
-            index_x = math.floor((x+0.5*self.dx)/self.dx)+1
-            index_y = math.floor(y/self.dy)+1
+            index_x = math.floor((x+0.5*self.dx)/self.dx)
+            index_y = math.floor(y/self.dy)
         return index_x, index_y
         
     def get_weight_coeff(self, x, y, index_x, index_y, axis):
@@ -40,11 +40,11 @@ class Domain:
         inside the eulerian cell.
         """
         if (axis == 1):      # x-dir
-            coeff_x = x/self.dx-index_x+1
-            coeff_y = (y+0.5*self.dy)/self.dy-index_y+1
+            coeff_x = x/self.dx-index_x
+            coeff_y = (y+0.5*self.dy)/self.dy-index_y
         else:                # y-dir
-            coeff_x = (x+0.5*self.dx)/self.dx-index_x+1
-            coeff_y = y/self.dy-index_y+1
+            coeff_x = (x+0.5*self.dx)/self.dx-index_x
+            coeff_y = y/self.dy-index_y
         return coeff_x, coeff_y
 
 class Face:

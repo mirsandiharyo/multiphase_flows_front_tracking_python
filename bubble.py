@@ -31,7 +31,7 @@ class Bubble:
         """ 
         for i in range(self.point+2):
             self.x[i] = self.center_x-self.radius*math.sin(2.0*math.pi*i/self.point)
-            self.y[i] = self.center_y-self.radius*math.cos(2.0*math.pi*i/self.point)
+            self.y[i] = self.center_y+self.radius*math.cos(2.0*math.pi*i/self.point)
             
     def store_old_variables(self):
         """ 
@@ -56,7 +56,7 @@ class Bubble:
         tan_x = np.zeros(self.point+2)
         tan_y = np.zeros(self.point+2)
         # calculate the tangent vector
-        for i in range(self.point):
+        for i in range(self.point+1):
             dist = math.sqrt((self.x[i+1]-self.x[i])**2+
                              (self.y[i+1]-self.y[i])**2)
             tan_x[i] = (self.x[i+1]-self.x[i])/dist
@@ -65,7 +65,7 @@ class Bubble:
         tan_y[self.point+1] = tan_y[1]
 
         # distribute the surface tension force to the eulerian grid
-        for i in range(1, self.point):
+        for i in range(1, self.point+1):
             # force in x-direction
             force_x = fluid_prop.sigma*(tan_x[i]-tan_x[i-1])
             self.distribute_lagrangian_to_eulerian(
