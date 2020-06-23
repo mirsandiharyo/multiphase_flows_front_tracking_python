@@ -64,7 +64,7 @@ for nstep in range(1, param.nstep+1):
                                                  fluid, face)
         
         # solve pressure
-        flow_solver.solve_pressure()
+        flow_solver.solve_pressure(param, domain, fluid, face, center)
         
         # correct the velocity by adding the pressure gradient
         flow_solver.correct_velocity(param, domain, fluid, face, center)
