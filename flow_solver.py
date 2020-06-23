@@ -30,72 +30,105 @@ class FlowSolver:
         (first step of the second order projection method).
         """ 
         # temporary u velocity (advection term)
-        for i in range(1, domain.nx):
-            for j in range(1, domain.ny+1):
-                face.u_temp[i,j] = face.u[i,j]+param.dt*(-0.25*
-                    (((face.u[i+1,j  ]+face.u[i  ,j  ])**2-
-                      (face.u[i  ,j  ]+face.u[i-1,j  ])**2)/domain.dx+
-                     ((face.u[i  ,j+1]+face.u[i  ,j  ])*
-                      (face.v[i+1,j  ]+face.v[i  ,j  ])-
-                      (face.u[i  ,j  ]+face.u[i  ,j-1])*
-                      (face.v[i+1,j-1]+face.v[i  ,j-1]))/domain.dy)+
-                       face.force_x[i,j]/
-                      (0.5*(fluid.rho[i+1,j]+fluid.rho[i,j]))-
-                      (1.0 -fluid_prop.cont_rho/
-                      (0.5*(fluid.rho[i+1,j]+fluid.rho[i,j])))*domain.gravx)
-                
+        face.u_temp[1:domain.nx, 1:domain.ny+1] = \
+        	   face.u[1:domain.nx  , 1:domain.ny+1]+param.dt*(-0.25*
+            (((face.u[2:domain.nx+1, 1:domain.ny+1]+
+               face.u[1:domain.nx  , 1:domain.ny+1])**2-
+              (face.u[1:domain.nx  , 1:domain.ny+1]+
+               face.u[0:domain.nx-1, 1:domain.ny+1])**2)/domain.dx+
+             ((face.u[1:domain.nx  , 2:domain.ny+2]+
+               face.u[1:domain.nx  , 1:domain.ny+1])*
+              (face.v[2:domain.nx+1, 1:domain.ny+1]+
+               face.v[1:domain.nx  , 1:domain.ny+1])-
+              (face.u[1:domain.nx  , 1:domain.ny+1]+
+               face.u[1:domain.nx  , 0:domain.ny  ])*
+              (face.v[2:domain.nx+1, 0:domain.ny  ]+
+               face.v[1:domain.nx  , 0:domain.ny  ]))/domain.dy)+
+               face.force_x[1:domain.nx, 1:domain.ny+1]/
+              (0.5*(fluid.rho[2:domain.nx+1, 1:domain.ny+1]+
+                    fluid.rho[1:domain.nx  , 1:domain.ny+1]))-
+              (1.0 -fluid_prop.cont_rho/
+              (0.5*(fluid.rho[2:domain.nx+1, 1:domain.ny+1]+
+                    fluid.rho[1:domain.nx  , 1:domain.ny+1])))*domain.gravx)
+                       
         # temporary v velocity (advection term)
-        for i in range(1, domain.nx+1):
-            for j in range(1, domain.ny):
-                face.v_temp[i,j] = face.v[i,j]+param.dt*(-0.25*
-                    (((face.u[i  ,j+1]+face.u[i  ,j  ])*
-                      (face.v[i+1,j  ]+face.v[i  ,j  ])-
-                      (face.u[i-1,j+1]+face.u[i-1,j  ])*
-                      (face.v[i  ,j  ]+face.v[i-1,j  ]))/domain.dx+
-                     ((face.v[i  ,j+1]+face.v[i  ,j  ])**2-
-                      (face.v[i  ,j  ]+face.v[i  ,j-1])**2)/domain.dy)+
-                       face.force_y[i,j]/
-                      (0.5*(fluid.rho[i,j+1]+fluid.rho[i,j]))-
-                      (1.0 -fluid_prop.cont_rho/
-                      (0.5*(fluid.rho[i,j+1]+fluid.rho[i,j])))*domain.gravy)
-                
+        face.v_temp[1:domain.nx+1, 1:domain.ny] = \
+               face.v[1:domain.nx+1, 1:domain.ny  ]+param.dt*(-0.25*
+            (((face.u[1:domain.nx+1, 2:domain.ny+1]+
+               face.u[1:domain.nx+1, 1:domain.ny  ])*
+              (face.v[2:domain.nx+2, 1:domain.ny  ]+
+               face.v[1:domain.nx+1, 1:domain.ny  ])-
+              (face.u[0:domain.nx  , 2:domain.ny+1]+
+               face.u[0:domain.nx  , 1:domain.ny  ])*
+              (face.v[1:domain.nx+1, 1:domain.ny  ]+
+               face.v[0:domain.nx  , 1:domain.ny  ]))/domain.dx+
+             ((face.v[1:domain.nx+1, 2:domain.ny+1]+
+               face.v[1:domain.nx+1, 1:domain.ny  ])**2-
+              (face.v[1:domain.nx+1, 1:domain.ny]+
+               face.v[1:domain.nx+1, 0:domain.ny-1])**2)/domain.dy)+
+               face.force_y[1:domain.nx+1, 1:domain.ny]/
+              (0.5*(fluid.rho[1:domain.nx+1, 2:domain.ny+1]+
+                    fluid.rho[1:domain.nx+1, 1:domain.ny  ]))-
+              (1.0 -fluid_prop.cont_rho/
+              (0.5*(fluid.rho[1:domain.nx+1, 2:domain.ny+1]+
+                    fluid.rho[1:domain.nx+1, 1:domain.ny  ])))*domain.gravy)
+                       
         # temporary u velocity (diffusion term)
-        for i in range(1, domain.nx):
-            for j in range (1, domain.ny+1):
-                face.u_temp[i,j] = face.u_temp[i,j]+param.dt*((1./domain.dx)*2.*
-                (fluid.mu[i+1,j  ]*(1./domain.dx)*
-                  (face.u[i+1,j  ]-face.u[i  ,j  ])-
-                 fluid.mu[i  ,j  ]*(1./domain.dx)*
-                  (face.u[i  ,j  ]-face.u[i-1,j  ]))+(1./domain.dy)*(0.25*
-                (fluid.mu[i  ,j  ]+fluid.mu[i+1,j  ]+         
-                 fluid.mu[i+1,j+1]+fluid.mu[i  ,j+1])*                            
-                ((1./domain.dy)*(face.u[i  ,j+1]-face.u[i  ,j  ])+
-                 (1./domain.dx)*(face.v[i+1,j  ]-face.v[i  ,j  ]))-0.25*
-                (fluid.mu[i  ,j  ]+fluid.mu[i+1,j  ]+
-                 fluid.mu[i+1,j-1]+fluid.mu[i  ,j-1])*
-                ((1./domain.dy)*(face.u[i  ,j  ]-face.u[i  ,j-1])+
-                 (1./domain.dx)*(face.v[i+1,j-1]-face.v[i  ,j-1]))))/ \
-                 (0.5*(fluid.rho[i+1,j]+fluid.rho[i,j]))
-                 
+        face.u_temp[1:domain.nx  , 1:domain.ny+1] = \
+        face.u_temp[1:domain.nx  , 1:domain.ny+1]+param.dt*((1./domain.dx)*2.*
+          (fluid.mu[2:domain.nx+1, 1:domain.ny+1]*(1./domain.dx)*
+            (face.u[2:domain.nx+1, 1:domain.ny+1]-
+             face.u[1:domain.nx  , 1:domain.ny+1])-
+           fluid.mu[1:domain.nx  , 1:domain.ny+1]*(1./domain.dx)*
+            (face.u[1:domain.nx  , 1:domain.ny+1]-
+             face.u[0:domain.nx-1, 1:domain.ny+1]))+(1./domain.dy)*(0.25*
+          (fluid.mu[1:domain.nx  , 1:domain.ny+1]+
+           fluid.mu[2:domain.nx+1, 1:domain.ny+1]+         
+           fluid.mu[2:domain.nx+1, 2:domain.ny+2]+
+           fluid.mu[1:domain.nx  , 2:domain.ny+2])*((1./domain.dy)*
+            (face.u[1:domain.nx  , 2:domain.ny+2]-
+             face.u[1:domain.nx  , 1:domain.ny+1])+(1./domain.dx)*
+            (face.v[2:domain.nx+1, 1:domain.ny+1]-
+             face.v[1:domain.nx  , 1:domain.ny+1]))-0.25*
+          (fluid.mu[1:domain.nx  , 1:domain.ny+1]+
+           fluid.mu[2:domain.nx+1, 1:domain.ny+1]+
+           fluid.mu[2:domain.nx+1, 0:domain.ny  ]+
+           fluid.mu[1:domain.nx  , 0:domain.ny  ])*((1./domain.dy)*
+            (face.u[1:domain.nx  , 1:domain.ny+1]-
+             face.u[1:domain.nx  , 0:domain.ny  ])+(1./domain.dx)*
+            (face.v[2:domain.nx+1, 0:domain.ny  ]-
+             face.v[1:domain.nx  , 0:domain.ny  ]))))/(0.5*
+         (fluid.rho[2:domain.nx+1, 1:domain.ny+1]+
+          fluid.rho[1:domain.nx  , 1:domain.ny+1]))     
+                                                       
         # temporary v velocity (diffusion term)
-        for i in range(1, domain.nx+1):
-            for j in range(1, domain.ny):
-                face.v_temp[i,j] = face.v_temp[i,j]+param.dt*((1./domain.dx)*(0.25*
-                (fluid.mu[i  ,j  ]+fluid.mu[i+1,j  ]+
-                 fluid.mu[i+1,j+1]+fluid.mu[i,j+1  ])*
-                ((1./domain.dy)*(face.u[i  ,j+1]-face.u[i  ,j  ])+            
-                 (1./domain.dx)*(face.v[i+1,j  ]-face.v[i  ,j  ]))-0.25*      
-                (fluid.mu[i  ,j  ]+fluid.mu[i  ,j+1]+                  
-                 fluid.mu[i-1,j+1]+fluid.mu[i-1,j  ])*          
-                ((1./domain.dy)*(face.u[i-1,j+1]-face.u[i-1,j  ])+
-                 (1./domain.dx)*(face.v[i  ,j  ]-face.v[i-1,j  ])))+ \
-                 (1./domain.dy)*2.* \
-                (fluid.mu[i  ,j+1]*(1./domain.dy)*
-                  (face.v[i  ,j+1]-face.v[i  ,j  ])-
-                 fluid.mu[i  ,j  ]*(1./domain.dy)*
-                  (face.v[i  ,j  ]-face.v[i  ,j-1])))/ \
-                 (0.5*(fluid.rho[i,j+1]+fluid.rho[i,j]))
-                 
+        face.v_temp[1:domain.nx+1, 1:domain.ny  ] = \
+        face.v_temp[1:domain.nx+1, 1:domain.ny  ]+param.dt*((1./domain.dx)*(0.25*
+          (fluid.mu[1:domain.nx+1, 1:domain.ny  ]+
+           fluid.mu[2:domain.nx+2, 1:domain.ny  ]+
+           fluid.mu[2:domain.nx+2, 2:domain.ny+1]+
+           fluid.mu[1:domain.nx+1, 2:domain.ny+1])*((1./domain.dy)*
+            (face.u[1:domain.nx+1, 2:domain.ny+1]-
+             face.u[1:domain.nx+1, 1:domain.ny  ])+(1./domain.dx)*
+            (face.v[2:domain.nx+2, 1:domain.ny  ]-
+             face.v[1:domain.nx+1, 1:domain.ny  ]))-0.25*      
+          (fluid.mu[1:domain.nx+1, 1:domain.ny  ]+
+           fluid.mu[1:domain.nx+1, 2:domain.ny+1]+                  
+           fluid.mu[0:domain.nx  , 2:domain.ny+1]+
+           fluid.mu[0:domain.nx  , 1:domain.ny  ])*((1./domain.dy)*
+            (face.u[0:domain.nx  , 2:domain.ny+1]-
+             face.u[0:domain.nx  , 1:domain.ny  ])+(1./domain.dx)*
+            (face.v[1:domain.nx+1, 1:domain.ny  ]-
+             face.v[0:domain.nx  , 1:domain.ny  ])))+(1./domain.dy)*2.*
+          (fluid.mu[1:domain.nx+1, 2:domain.ny+1]*(1./domain.dy)*
+            (face.v[1:domain.nx+1, 2:domain.ny+1]-
+             face.v[1:domain.nx+1, 1:domain.ny  ])-
+           fluid.mu[1:domain.nx+1, 1:domain.ny  ]*(1./domain.dy)*
+            (face.v[1:domain.nx+1, 1:domain.ny  ]-
+             face.v[1:domain.nx+1, 0:domain.ny-1])))/(0.5*
+         (fluid.rho[1:domain.nx+1, 2:domain.ny+1]+
+          fluid.rho[1:domain.nx+1, 1:domain.ny  ])) 
+                                                              
     @staticmethod
     def solve_pressure(param, domain, fluid, face, center):
         """
