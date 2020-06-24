@@ -111,10 +111,10 @@ class IOManager:
         v_center[0:domain.nx+1,0:domain.ny+1]=0.5*(face.v[1:domain.nx+2,0:domain.ny+1]+
                                                    face.v[0:domain.nx+1,0:domain.ny+1])
         # plot the velocity vector
-        plt.quiver(grid_x, grid_y, np.rot90(u_center), np.rot90(v_center))
+        plt.quiver(grid_x, grid_y, u_center.T, v_center.T, color='w')
         # plot the marker points
         for bub in bubble_list:
-            plt.plot(bub.x[0:bub.point],bub.y[0:bub.point],'k',linewidth=1)  
+            plt.plot(bub.x[0:bub.point],bub.y[0:bub.point],'k',linewidth=2)  
         # save the plot
         caption = 'output/bub_%03d.png' % nstep
         plt.savefig(caption,dpi=150)

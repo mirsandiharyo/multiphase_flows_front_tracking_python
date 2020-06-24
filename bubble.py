@@ -19,10 +19,10 @@ class Bubble:
         self.center_y = center_y
         self.radius = radius
         self.point = point
-        self.x = np.zeros(self.point*2)
-        self.y = np.zeros(self.point*2)
-        self.x_old = np.zeros(self.point*2)
-        self.y_old = np.zeros(self.point*2)        
+        self.x = np.zeros(self.point*3)
+        self.y = np.zeros(self.point*3)
+        self.x_old = np.zeros(self.point*3)
+        self.y_old = np.zeros(self.point*3)        
         Bubble.total += 1
         
     def initialize_front(self):
@@ -37,8 +37,8 @@ class Bubble:
         """ 
         Store old variables for second order scheme.
         """ 
-        self.x_old = self.x
-        self.y_old = self.y
+        self.x_old = self.x.copy()
+        self.y_old = self.y.copy()
 
     def store_2nd_order_variables(self):
         """ 
@@ -146,10 +146,9 @@ class Bubble:
         """
         Restructure the front to maintain the quality of the interface.
         """
-        self.x_old = self.x
-        self.y_old = self.y
+        self.x_old = self.x.copy()
+        self.y_old = self.y.copy()
         j = 0
-        print(self.point)
         for i in range(1, self.point+1):
             # check the distance
             dst = math.sqrt(((self.x_old[i]-self.x[j])/domain.dx)**2 +
@@ -162,7 +161,9 @@ class Bubble:
                 j = j+1
                 self.x[j] = self.x_old[i]
                 self.y[j] = self.y_old[i]
-            elif (dst >= 0.25) and (dst <= 0.5):
+            elif (dst < 0.25):
+                pass
+            else:
                 j = j+1
                 self.x[j] = self.x_old[i]
                 self.y[j] = self.y_old[i]

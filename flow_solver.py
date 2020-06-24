@@ -20,9 +20,9 @@ class FlowSolver:
         v_east = 0;
         face.u[:,0] = 2*u_south-face.u[:,1]
         face.v[0,:] = 2*v_west -face.v[1,:]
-        face.u[:,domain.ny+1] = 2*u_north-face.u[:,domain.ny+1]
-        face.v[domain.nx+1,:] = 2*v_east -face.v[domain.nx+1,:]
-        
+        face.u[:,domain.ny+1] = 2*u_north-face.u[:,domain.ny]
+        face.v[domain.nx+1,:] = 2*v_east -face.v[domain.nx,:]
+      
     @staticmethod
     def calculate_temporary_velocity(param, domain, fluid_prop, fluid, face):
         """
@@ -192,12 +192,12 @@ class FlowSolver:
         """
         # correct velocity in x-direction
         face.u[1:domain.nx,1:domain.ny+1] = \
-            face.u_temp[1:domain.nx  ,1:domain.ny+1]-param.dt*(2.0/domain.dy)* \
+            face.u_temp[1:domain.nx  ,1:domain.ny+1]-param.dt*(2.0/domain.dx)* \
            (center.pres[2:domain.nx+1,1:domain.ny+1]-
             center.pres[1:domain.nx  ,1:domain.ny+1])/ \
              (fluid.rho[2:domain.nx+1,1:domain.ny+1]+
               fluid.rho[1:domain.nx  ,1:domain.ny+1])
-
+                
         # correct velocity in y-direction
         face.v[1:domain.nx+1,1:domain.ny] = \
             face.v_temp[1:domain.nx+1,1:domain.ny  ]-param.dt*(2.0/domain.dy)* \

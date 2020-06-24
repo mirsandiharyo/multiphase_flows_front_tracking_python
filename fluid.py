@@ -48,8 +48,8 @@ class Fluid:
         """ 
         Store old variables for second order scheme.
         """
-        self.rho_old = self.rho
-        self.mu_old = self.mu
+        self.rho_old = self.rho.copy()
+        self.mu_old = self.mu.copy()
  
     def store_2nd_order_variables(self):
         """ 
@@ -74,7 +74,6 @@ class Fluid:
                     (fluid_prop.disp_rho-fluid_prop.cont_rho)
                 bub.distribute_lagrangian_to_eulerian(domain, face_x, bub.x[i],
                                                       bub.y[i], force_x, 1)
-
                 # density jump in y-direction
                 force_y = 0.5*(bub.x[i+1]-bub.x[i-1])* \
                     (fluid_prop.disp_rho-fluid_prop.cont_rho); 
@@ -84,18 +83,17 @@ class Fluid:
         # construct the density field using SOR
         # TODO: create SOR function 
         for it in range(param.max_iter):
-            old_rho = self.rho
-            self.rho[1:domain.nx+1, 1:domain.ny+1] = (1.0-param.beta)* \
-                self.rho[1:domain.nx+1, 1:domain.ny+1]+param.beta*0.25* \
-               (self.rho[2:domain.nx+2, 1:domain.ny+1]+
-                self.rho[0:domain.nx  , 1:domain.ny+1]+
-                self.rho[1:domain.nx+1, 2:domain.ny+2]+
-                self.rho[1:domain.nx+1, 0:domain.ny  ]+
-               domain.dx*face_x[0:domain.nx, 1:domain.ny+1]- 
-               domain.dx*face_x[1:domain.nx+1, 1:domain.ny+1]+
-               domain.dy*face_y[1:domain.nx+1, 0:domain.ny]-
-               domain.dy*face_y[1:domain.nx+1, 1:domain.ny+1])
-        
+            old_rho = self.rho.copy()
+            for i in range(1, domain.nx+1):
+                for j in range(1, domain.ny+1):
+                    self.rho[i,j] = (1.0-param.beta)* \
+                         self.rho[i  ,j  ]+ param.beta*0.25* \
+                        (self.rho[i+1,j  ]+self.rho[i-1,j  ]+
+                         self.rho[i  ,j+1]+self.rho[i  ,j-1]+
+                         domain.dx*face_x[i-1,j  ]-
+                         domain.dx*face_x[i  ,j  ]+
+                         domain.dy*face_y[i  ,j-1]-
+                         domain.dy*face_y[i  ,j  ])
             if (np.abs(old_rho-self.rho).max() < param.max_err):
                 break
             

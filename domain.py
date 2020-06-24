@@ -75,8 +75,8 @@ class Face:
         """ 
         Store old variables for second order scheme.
         """
-        self.u_old = self.u
-        self.v_old = self.v
+        self.u_old = self.u.copy()
+        self.v_old = self.v.copy()
         
     def store_2nd_order_variables(self):
         """ 

@@ -47,12 +47,11 @@ for nstep in range(1, param.nstep+1):
     fluid.store_old_variables()
     for bub in bubble_list:
         bub.store_old_variables()
-    
+
     for substep in range(2):  # second order loop
         # calculate the surface tension force at the front (lagrangian grid)
         # and distribute it to eulerian grid
-        face.initialize_force(domain)
-        
+        face.initialize_force(domain)      
         for bub in bubble_list:
             bub.calculate_surface_tension(domain, fluid_prop, face)
 
@@ -91,7 +90,6 @@ for nstep in range(1, param.nstep+1):
     # visualize the results
     param.time = param.time+param.dt
     if (nstep % param.out_freq == 0):
-        print('visualize results')
         io_man.visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
                          param.time, nstep)        
 # end time-loop
