@@ -60,7 +60,8 @@ class Fluid:
         
     def update_density(self, param, domain, bubble_list, fluid_prop):
         """ 
-        Update the density field using the density jump at the lagrangian interface.
+        Update the density field using the density jump at the lagrangian 
+        interface.
         Linear averaging is used to get the value at each cell.
         """
         # initialize the variables to store the density jump

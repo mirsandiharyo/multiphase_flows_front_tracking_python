@@ -81,7 +81,8 @@ class IOManager:
         return param, domain, fluid_prop, bubble_list
     
     @staticmethod
-    def visualize_results(face, domain, fluid, fluid_prop, bubble_list, time, nstep):
+    def visualize_results(face, domain, fluid, fluid_prop, bubble_list, 
+                          time, nstep):
         """
         Visualize the phase fraction field, velocity vector, and marker points.
         """
@@ -106,10 +107,12 @@ class IOManager:
         grid_y = np.linspace(0, domain.ly, domain.ny+1)
         u_center = np.zeros((domain.nx+1, domain.ny+1))
         v_center = np.zeros((domain.nx+1, domain.ny+1))
-        u_center[0:domain.nx+1,0:domain.ny+1]=0.5*(face.u[0:domain.nx+1,1:domain.ny+2]+
-                                                   face.u[0:domain.nx+1,0:domain.ny+1])
-        v_center[0:domain.nx+1,0:domain.ny+1]=0.5*(face.v[1:domain.nx+2,0:domain.ny+1]+
-                                                   face.v[0:domain.nx+1,0:domain.ny+1])
+        u_center[0:domain.nx+1,0:domain.ny+1]=0.5*(
+            face.u[0:domain.nx+1,1:domain.ny+2]+
+            face.u[0:domain.nx+1,0:domain.ny+1])
+        v_center[0:domain.nx+1,0:domain.ny+1]=0.5*(
+            face.v[1:domain.nx+2,0:domain.ny+1]+
+            face.v[0:domain.nx+1,0:domain.ny+1])
         # plot the velocity vector
         plt.quiver(grid_x, grid_y, u_center.T, v_center.T, color='w')
         # plot the marker points

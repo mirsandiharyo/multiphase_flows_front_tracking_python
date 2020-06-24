@@ -106,14 +106,17 @@ class Bubble:
         """
         Advect the location of marker points using the interpolated velocity field.
         """
-        # interpolate the velocity from the eulerian grid to the location of marker point
+        # interpolate the velocity from the eulerian grid to the location of 
+        # marker point
         u_x = np.zeros(self.point+2)
         u_y = np.zeros(self.point+2)
         for i in range(1, self.point+1):
             # interpolate velocity in x-direction
-            u_x[i] = self.interpolate_velocity(domain, face.u, self.x[i], self.y[i], 1)
+            u_x[i] = self.interpolate_velocity(domain, face.u, self.x[i], 
+                                               self.y[i], 1)
             # interpolate velocity in y-direction
-            u_y[i] = self.interpolate_velocity(domain, face.v, self.x[i], self.y[i], 2)
+            u_y[i] = self.interpolate_velocity(domain, face.v, self.x[i], 
+                                               self.y[i], 2)
     
     	# advect the marker point 
         for i in range(1, self.point+1):

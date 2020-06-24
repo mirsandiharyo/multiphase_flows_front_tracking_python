@@ -24,7 +24,8 @@ class Domain:
 
     def get_cell_index(self, x, y, axis):
         """ 
-        Fetch the indices of the eulerian cell located on the left of a given point.
+        Fetch the indices of the eulerian cell located on the left of a 
+        given point.
         """
         if (axis == 1):      # x-dir
             index_x = math.floor(x/self.dx);
@@ -36,8 +37,8 @@ class Domain:
         
     def get_weight_coeff(self, x, y, index_x, index_y, axis):
         """ 
-        Calculate the weight coefficients of a point with respect to its location 
-        inside the eulerian cell.
+        Calculate the weight coefficients of a point with respect to its 
+        location inside the eulerian cell.
         """
         if (axis == 1):      # x-dir
             coeff_x = x/self.dx-index_x
