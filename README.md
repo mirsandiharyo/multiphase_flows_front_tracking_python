@@ -8,7 +8,7 @@
 
 ### Examples
 
-![two_bubbles](https://user-images.githubusercontent.com/16385717/87855501-11e7f100-c919-11ea-990c-0f77ca185d2d.gif)
+![single_bubble](https://user-images.githubusercontent.com/16385717/87856233-0945e980-c91e-11ea-9c0f-c05d83645c39.gif)
 
 ### Contact Details ###
 
