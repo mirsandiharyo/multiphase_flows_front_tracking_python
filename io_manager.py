@@ -88,20 +88,7 @@ class IOManager:
         """
         # calculate phase fraction
         alpha = fluid.rho - fluid_prop.cont_rho
-        alpha = alpha * 1/(fluid_prop.disp_rho-fluid_prop.cont_rho)     
-        # plot the phase fraction
-        plt.clf()
-        plt.imshow(np.rot90(alpha[1:domain.nx+1,1:domain.ny+1]), cmap='jet', 
-                          extent=[0,domain.lx,0,domain.ly], aspect=1)
-        plt.xticks(fontsize=7)
-        plt.yticks(fontsize=7)
-        # set figure title
-        caption = 'Time = %.3f s'% time
-        plt.title(caption, fontsize=8)
-        # set the colorbar
-        cbar = plt.colorbar()
-        cbar.ax.set_title('Phase fraction', rotation=0, size=8)
-        cbar.ax.tick_params(labelsize=7)           
+        alpha = alpha * 1/(fluid_prop.disp_rho-fluid_prop.cont_rho)
         # create grid and calculate velocity at the cell center
         grid_x = np.linspace(0, domain.lx, domain.nx+1)
         grid_y = np.linspace(0, domain.ly, domain.ny+1)
@@ -113,8 +100,25 @@ class IOManager:
         v_center[0:domain.nx+1,0:domain.ny+1]=0.5*(
             face.v[1:domain.nx+2,0:domain.ny+1]+
             face.v[0:domain.nx+1,0:domain.ny+1])
+        vel_mag = np.sqrt(np.square(u_center) + np.square(v_center))
+        # plot the phase fraction
+        plt.clf()
+        plt.imshow(np.rot90(alpha[1:domain.nx+1,1:domain.ny+1]), cmap='jet', 
+                          extent=[0,domain.lx,0,domain.ly], aspect=1)
+        plt.clim(0, 1)
+        plt.xticks(fontsize=7)
+        plt.yticks(fontsize=7)
+        # set figure title
+        caption = 'Time = %.3f s'% time
+        plt.title(caption, fontsize=8)
+        # set the colorbar
+        cbar = plt.colorbar()
+        cbar.ax.set_title('Phase fraction', rotation=0, size=8)
+        cbar.ax.tick_params(labelsize=7)           
         # plot the velocity vector
         plt.quiver(grid_x, grid_y, u_center.T, v_center.T, color='w')
+        # plot contour of velocity magnitude
+        plt.contour(grid_x, grid_y, vel_mag.T, colors='black', alpha=0.2)
         # plot the marker points
         for bub in bubble_list:
             plt.plot(bub.x[0:bub.point],bub.y[0:bub.point],'k',linewidth=2)  
