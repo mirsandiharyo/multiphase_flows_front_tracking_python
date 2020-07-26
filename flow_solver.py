@@ -165,23 +165,59 @@ class FlowSolver:
               1./(domain.dy*
              (rho_temp[1:domain.nx+1,0:domain.ny  ]+
               rho_temp[1:domain.nx+1,1:domain.ny+1]))))  
-  
+        
         # construct the pressure field using SOR
         # TODO: create SOR function
         for it in range(param.max_iter):
             old_pres = center.pres.copy()
-            for i in range(1, domain.nx+1):
-                for j in range(1, domain.ny+1):
-                    center.pres[i  ,j  ] = (1.0-param.beta)* \
-                    center.pres[i  ,j  ]+param.beta*temp2[i,j]*((1./domain.dx)* \
-                   (center.pres[i+1,j  ]/(domain.dx*
-                      (rho_temp[i+1,j  ]+rho_temp[i,j]))+
-                    center.pres[i-1,j  ]/(domain.dx*
-                      (rho_temp[i-1,j  ]+rho_temp[i,j])))+(1./domain.dy)* \
-                   (center.pres[i  ,j+1]/(domain.dy*
-                      (rho_temp[i  ,j+1]+rho_temp[i,j]))+ \
-                    center.pres[i  ,j-1]/(domain.dy*
-                      (rho_temp[i  ,j-1]+rho_temp[i,j])))-temp1[i,j])
+            for iskip in range(2):
+                rb = iskip
+                center.pres[1+rb:domain.nx+1:2,1:domain.ny+1:2] = \
+                ((1.0-param.beta)*
+                center.pres[1+rb:domain.nx+1:2,1:domain.ny+1:2]+param.beta*
+                      temp2[1+rb:domain.nx+1:2,1:domain.ny+1:2]*
+               ((1.0/domain.dx/domain.dx)* 
+               (center.pres[2+rb:domain.nx+2:2,1:domain.ny+1:2]/
+                  (rho_temp[2+rb:domain.nx+2:2,1:domain.ny+1:2]+
+                   rho_temp[1+rb:domain.nx+1:2,1:domain.ny+1:2])+
+                center.pres[  rb:domain.nx  :2,1:domain.ny+1:2]/
+                  (rho_temp[  rb:domain.nx  :2,1:domain.ny+1:2]+
+                   rho_temp[1+rb:domain.nx+1:2,1:domain.ny+1:2]))+
+               (1.0/domain.dy/domain.dy)*
+               (center.pres[1+rb:domain.nx+1:2,2:domain.ny+2:2]/
+                  (rho_temp[1+rb:domain.nx+1:2,2:domain.ny+2:2]+
+                   rho_temp[1+rb:domain.nx+1:2,1:domain.ny+1:2])+
+                center.pres[1+rb:domain.nx+1:2,0:domain.ny  :2]/
+                  (rho_temp[1+rb:domain.nx+1:2,0:domain.ny  :2]+
+                   rho_temp[1+rb:domain.nx+1:2,1:domain.ny+1:2]))-
+                      temp1[1+rb:domain.nx+1:2,1:domain.ny+1:2]))
+    
+                rb=1-iskip
+                center.pres[1+rb:domain.nx+1:2,2:domain.ny+1:2] = \
+                ((1.0-param.beta)*
+                center.pres[1+rb:domain.nx+1:2,2:domain.ny+1:2]+param.beta*
+                      temp2[1+rb:domain.nx+1:2,2:domain.ny+1:2]*
+               ((1.0/domain.dx/domain.dx)*
+               (center.pres[2+rb:domain.nx+2:2,2:domain.ny+1:2]/
+                  (rho_temp[2+rb:domain.nx+2:2,2:domain.ny+1:2]+
+                   rho_temp[1+rb:domain.nx+1:2,2:domain.ny+1:2])+
+                center.pres[  rb:domain.nx:2  ,2:domain.ny+1:2]/
+                  (rho_temp[  rb:domain.nx:2  ,2:domain.ny+1:2]+
+                   rho_temp[1+rb:domain.nx+1:2,2:domain.ny+1:2]))+
+               (1.0/domain.dy/domain.dy)*
+               (center.pres[1+rb:domain.nx+1:2,3:domain.ny+2:2]/
+                  (rho_temp[1+rb:domain.nx+1:2,3:domain.ny+2:2]+
+                   rho_temp[1+rb:domain.nx+1:2,2:domain.ny+1:2])+
+                center.pres[1+rb:domain.nx+1:2,1:domain.ny  :2]/
+                  (rho_temp[1+rb:domain.nx+1:2,1:domain.ny  :2]+
+                   rho_temp[1+rb:domain.nx+1:2,2:domain.ny+1:2]))-
+                      temp1[1+rb:domain.nx+1:2,2:domain.ny+1:2]))
+    
+            center.pres[0,:] = center.pres[1,:]; 
+            center.pres[domain.nx+1,:] = center.pres[domain.nx,:]
+            center.pres[:,0] = center.pres[:,1]; 
+            center.pres[:,domain.ny+1] = center.pres[:,domain.ny]
+                                  
             if (np.abs(old_pres-center.pres).max() < param.max_err):
                 break
 
