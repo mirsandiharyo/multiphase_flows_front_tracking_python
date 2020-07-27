@@ -1,0 +1,31 @@
+SOLVER PARAMETERS:
+number of step = 250
+time step = 5.0e-03
+maximum iteration = 200
+maximum error = 1.0e-03
+beta = 1.5
+output frequency = 4
+
+NUMERICAL PARAMETERS:
+domain length in x-dir = 2e+00
+domain length in y-dir = 4e+00
+total cells in x-dir = 40
+total cells in y-dir = 80
+gravity in x-dir = 0.0e+00
+gravity in y-dir = 1.0e+02
+
+PHYSICAL PROPERTIES:
+DISPERSED PHASE: 
+density = 1.0e+00
+dynamic viscosity = 5.0e-02
+surface tension = 4.0e+00
+CONTINUOUS PHASE:
+density = 2.0e+00
+dynamic viscosity = 1.0e-02
+
+BUBBLE SIZE AND LOCATION:
+number of bubbles = 1
+radius = 0.3
+location x = 1.0
+location y = 0.4
+marker points = 100

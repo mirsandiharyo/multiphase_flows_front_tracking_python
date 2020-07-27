@@ -20,7 +20,7 @@ io_man.create_dir('output')
 io_man.clean_dir('output','bub*.png')
     
 # read input file
-filepath = 'input.txt'
+filepath = 'input/two_bubbles.txt'
 [param, domain, fluid_prop, bubble_list] = io_man.read_input(filepath)
 
 # initialize variables (grid, velocity, pressure, and force)
