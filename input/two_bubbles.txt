@@ -1,5 +1,5 @@
 SOLVER PARAMETERS:
-number of step = 600
+number of step = 360
 time step = 6.0e-03
 maximum iteration = 200
 maximum error = 1.0e-03
