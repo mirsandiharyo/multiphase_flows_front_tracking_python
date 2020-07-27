@@ -85,16 +85,36 @@ class Fluid:
         # TODO: create SOR function 
         for it in range(param.max_iter):
             old_rho = self.rho.copy()
-            for i in range(1, domain.nx+1):
-                for j in range(1, domain.ny+1):
-                    self.rho[i,j] = (1.0-param.beta)* \
-                         self.rho[i  ,j  ]+ param.beta*0.25* \
-                        (self.rho[i+1,j  ]+self.rho[i-1,j  ]+
-                         self.rho[i  ,j+1]+self.rho[i  ,j-1]+
-                         domain.dx*face_x[i-1,j  ]-
-                         domain.dx*face_x[i  ,j  ]+
-                         domain.dy*face_y[i  ,j-1]-
-                         domain.dy*face_y[i  ,j  ])
+            for iskip in range(2):
+                rb = iskip
+                self.rho[1+rb:domain.nx+1:2,1:domain.ny+1:2] = (1.0-param.beta)* \
+                self.rho[1+rb:domain.nx+1:2,1:domain.ny+1:2]+param.beta*0.25* \
+               (self.rho[2+rb:domain.nx+2:2,1:domain.ny+1:2]+
+                self.rho[  rb:domain.nx  :2,1:domain.ny+1:2]+
+                self.rho[1+rb:domain.nx+1:2,2:domain.ny+2:2]+
+                self.rho[1+rb:domain.nx+1:2,0:domain.ny  :2]+
+                domain.dx*face_x[  rb:domain.nx  :2,1:domain.ny+1:2]- 
+                domain.dx*face_x[1+rb:domain.nx+1:2,1:domain.ny+1:2]+
+                domain.dy*face_y[1+rb:domain.nx+1:2,0:domain.ny  :2]-
+                domain.dy*face_y[1+rb:domain.nx+1:2,1:domain.ny+1:2])             
+                
+                rb = 1-iskip
+                self.rho[1+rb:domain.nx+1:2,2:domain.ny+1:2] = (1.0-param.beta)* \
+                self.rho[1+rb:domain.nx+1:2,2:domain.ny+1:2]+param.beta*0.25* \
+               (self.rho[2+rb:domain.nx+2:2,2:domain.ny+1:2]+
+                self.rho[  rb:domain.nx:2  ,2:domain.ny+1:2]+
+                self.rho[1+rb:domain.nx+1:2,3:domain.ny+2:2]+
+                self.rho[1+rb:domain.nx+1:2,1:domain.ny  :2]+
+                domain.dx*face_x[  rb:domain.nx:2  ,2:domain.ny+1:2]- 
+                domain.dx*face_x[1+rb:domain.nx+1:2,2:domain.ny+1:2]+
+                domain.dy*face_y[1+rb:domain.nx+1:2,1:domain.ny  :2]-
+                domain.dy*face_y[1+rb:domain.nx+1:2,2:domain.ny+1:2])  
+ 
+            self.rho[0,:] = self.rho[1,:]; 
+            self.rho[domain.nx+1,:] = self.rho[domain.nx,:]
+            self.rho[:,0] = self.rho[:,1]; 
+            self.rho[:,domain.ny+1] = self.rho[:,domain.ny]
+
             if (np.abs(old_rho-self.rho).max() < param.max_err):
                 break
             
